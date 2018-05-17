@@ -1,6 +1,6 @@
 'use strict';
 
-import bind from './helpers/bind';
+import { bind } from './helpers/bind';
 
 /*global toString:true*/
 

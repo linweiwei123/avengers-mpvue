@@ -36,7 +36,7 @@ utils.forEach(['delete','get'],function forEachMethodNoData(method){
                 header: config.header,
                 method: method.toUpperCase(),
                 success: function(res) {
-                  console.log(res);
+                  console.log('[API返回]:', res);
                   if(res && res.data && typeof res.data.errcode !== 'undefined'){
                       resolve(res.data);
                   }
@@ -45,7 +45,7 @@ utils.forEach(['delete','get'],function forEachMethodNoData(method){
                   }
                 },
                 fail: function (err) {
-                  console.log('请求失败');
+                  console.log('[fail]: 请求失败');
                     reject(err)
                 }
             })

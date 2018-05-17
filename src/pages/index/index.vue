@@ -1,30 +1,18 @@
 <template>
   <div class="container" @click="clickHandle('test click', $event)">
-
-    <div class="userinfo" @click="bindViewTap">
-      <img class="userinfo-avatar" v-if="userInfo.avatarUrl" :src="userInfo.avatarUrl" background-size="cover" />
-      <div class="userinfo-nickname">
-        <card :text="userInfo.nickName"></card>
-      </div>
+    <a href="/pages/counter/main" class="counter">Router举例</a>
+    <div class="section" style="margin-top: 10px">
+      <button @click="count()">VueX的使用举例，count</button>
+      <p class="count-value">countValue的值:{{countValue}}</p>
     </div>
-
-    <div class="usermotto">
-      <div class="user-motto">
-        <card :text="motto"></card>
-      </div>
-    </div>
-
-    <form class="form-container">
-      <input type="text" class="form-control" v-model="motto" placeholder="v-model" />
-      <input type="text" class="form-control" v-model.lazy="motto" placeholder="v-model.lazy" />
-    </form>
-    <a href="/pages/counter/main" class="counter">去往Vuex示例页面</a>
   </div>
 </template>
 
 <script>
 import card from '@/components/card'
 import thor from '../../common/thor/thor'
+import { INCREMENT } from '../../store/mutation-types';
+
 export default {
   data () {
     return {
@@ -36,7 +24,13 @@ export default {
   components: {
     card
   },
-
+  computed: {
+    countValue: function(){
+      return this.$store.state.demo.count
+    }
+  },
+  mounted(){
+  },
   methods: {
     bindViewTap () {
       const url = '../logs/main'
@@ -58,13 +52,17 @@ export default {
       console.log('clickHandle:', msg, ev)
     },
     searchCity (){
-      thor.get('http://result.eolinker.com/wYP6JLz90f26fac05e677d66cf8a93dd0771d41f4c8d8ca?uri=apis/hotel/search?cityName=福州keyword=万达')
+      let cityUrl = 'http://result.eolinker.com/wYP6JLz90f26fac05e677d66cf8a93dd0771d41f4c8d8ca?uri=apis/hotel/search?cityName=福州keyword=万达';
+      thor.get(cityUrl)
         .then(res=>{
           console.log('请求成功', res);
         })
         .catch(err=>{
           console.log('请求失败',err);
         })
+    },
+    count (){
+      this.$store.commit(INCREMENT)
     }
   },
 
@@ -77,6 +75,16 @@ export default {
 </script>
 
 <style scoped>
+.section{
+  width: 375px;
+}
+.count-value{
+  width: 750rpx;
+  margin-top: 10px;
+  padding: 5px;
+  background-color: aliceblue;
+  text-align: center;
+}
 .userinfo {
   display: flex;
   flex-direction: column;

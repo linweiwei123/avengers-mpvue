@@ -1,12 +1,18 @@
 import Vue from 'vue'
 import App from './App'
+import store from './store/store'
 
-Vue.config.productionTip = false
-App.mpType = 'app'
+Vue.config.productionTip = false;
 
-const app = new Vue(App)
-app.$mount()
+//注意此处与web种Vuex的使用区别，目前只有这个方法可行
+Vue.prototype.$store = store;
 
+App.mpType = 'app';
+
+const app = new Vue(App);
+app.$mount();
+
+// 每个页面都有一个main.js 用来实现小程序的页面配置
 export default {
   // 这个字段走 app.json
   config: {
