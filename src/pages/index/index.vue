@@ -11,7 +11,6 @@
 <script>
 import card from '@/components/card'
 import thor from '../../common/thor/thor'
-import { INCREMENT } from '../../store/mutation-types';
 
 export default {
   data () {
@@ -66,7 +65,7 @@ export default {
     },
     count (){
       // 2、[vuex使用演示]-修改全局demo下count的数据
-      this.$store.commit(INCREMENT)
+      this.$store.commit('increment')
     }
   },
 
