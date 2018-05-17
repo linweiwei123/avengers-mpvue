@@ -1,5 +1,5 @@
-import { INCREMENT } from "../mutation-types";
-import { ASYNC_INCREMENT } from "../action-types";
+const INCREMENT = 'increment';
+export const ASYNC_INCREMENT = 'asyncIncrement';
 
 export default {
   state: {
