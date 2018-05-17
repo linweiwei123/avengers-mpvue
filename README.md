@@ -80,3 +80,7 @@ thor.request({
   width: 750rpx;
 }
 ```
+
+## vuex使用
+
+与web中的vuex使用一致
