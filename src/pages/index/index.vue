@@ -2,8 +2,8 @@
   <div class="container" @click="clickHandle('test click', $event)">
     <a href="/pages/counter/main" class="counter">Router举例</a>
     <div class="section" style="margin-top: 10px">
-      <button @click="count()">VueX的使用举例，count</button>
-      <p class="count-value">countValue的值:{{countValue}}</p>
+      <button @click="count()">VueX的使用举例，添加商品</button>
+      <p class="count-value">你添加的商品数:{{countValue}}</p>
     </div>
   </div>
 </template>
@@ -27,7 +27,7 @@ export default {
   computed: {
     // 1、[vuex使用演示]-取值
     countValue: function(){
-      return this.$store.state.demo.count
+      return this.$store.state.cart.count
     }
   },
   mounted(){
