@@ -25,6 +25,7 @@ export default {
     card
   },
   computed: {
+    // 1、[vuex使用演示]-取值
     countValue: function(){
       return this.$store.state.demo.count
     }
@@ -32,8 +33,9 @@ export default {
   mounted(){
   },
   methods: {
+    // 3、[路由program方式演示]-跳转页面
     bindViewTap () {
-      const url = '../logs/main'
+      const url = '../logs/main';
       wx.navigateTo({ url })
     },
     getUserInfo () {
@@ -52,6 +54,7 @@ export default {
       console.log('clickHandle:', msg, ev)
     },
     searchCity (){
+      // 4、[http模块thor请求演示]-get请求接口
       let cityUrl = 'http://result.eolinker.com/wYP6JLz90f26fac05e677d66cf8a93dd0771d41f4c8d8ca?uri=apis/hotel/search?cityName=福州keyword=万达';
       thor.get(cityUrl)
         .then(res=>{
@@ -62,6 +65,7 @@ export default {
         })
     },
     count (){
+      // 2、[vuex使用演示]-修改全局demo下count的数据
       this.$store.commit(INCREMENT)
     }
   },
@@ -75,9 +79,14 @@ export default {
 </script>
 
 <style scoped>
+
+/** 375px = 750rpx = 屏幕宽 **/
+/** 5、[css单位演示]-px (px以375px标准宽进行适配) **/
 .section{
   width: 375px;
 }
+
+/** 6、[css单位演示]-rpx (rpx以750rpx标准宽进行适配) **/
 .count-value{
   width: 750rpx;
   margin-top: 10px;

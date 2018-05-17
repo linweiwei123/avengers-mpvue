@@ -4,7 +4,7 @@ import store from './store/store'
 
 Vue.config.productionTip = false;
 
-//注意此处与web种Vuex的使用区别，目前只有这个方法可行
+// 注意此处与web种Vuex的使用区别，目前只有这个方法可行
 Vue.prototype.$store = store;
 
 App.mpType = 'app';

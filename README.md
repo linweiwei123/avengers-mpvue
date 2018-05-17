@@ -17,7 +17,8 @@ npm run build --report
 
 ## 依赖模块说明
 
-1. http模块使用 雷神thor
+1. http模块使用雷神thor 在common/thor目录下（请参考index页面）
+2. 支持使用vuex（请参考index页面）
 
 ## thor使用说明
 引用
@@ -62,4 +63,20 @@ thor.request({
     .catch(err=>{
       console.log('请求失败',err);
     })
+
+```
+## 适配
+
+小程序天然进行适配，有两种方式
+```
+/** 375px = 750rpx = 屏幕宽 **/
+/** 1、[css单位演示]-px (px以375px标准宽进行适配) **/
+.section{
+  width: 375px;
+}
+
+/** 2、[css单位演示]-rpx (rpx以750rpx标准宽进行适配) **/
+.section{
+  width: 750rpx;
+}
 ```
