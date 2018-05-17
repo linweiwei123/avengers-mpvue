@@ -19,6 +19,7 @@ npm run build --report
 
 1. http模块使用雷神thor 在common/thor目录下（请参考index页面）
 2. 支持使用vuex（请参考index页面）
+3. 支持less（请查看assets/css/app.less与index.vue页面）
 
 ## thor使用说明
 引用
@@ -84,3 +85,24 @@ thor.request({
 ## vuex使用
 
 与web中的vuex使用一致
+
+## less使用
+
+### 设置主题色举例
+```
+@theme-color: #FFA735;
+
+.text-label {
+  color: @theme-color
+}
+```
+
+### 变量计算举例
+```
+@bg-grey: #dddddd;
+@light-bg-grey: @bg-grey + #111;
+
+.bgColor {
+  background-color: @light-bg-grey;
+}
+```

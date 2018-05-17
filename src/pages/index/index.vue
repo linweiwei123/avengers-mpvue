@@ -1,9 +1,18 @@
 <template>
-  <div class="container" @click="clickHandle('test click', $event)">
-    <a href="/pages/counter/main" class="counter">Router举例</a>
-    <div class="section" style="margin-top: 10px">
-      <button @click="count()">VueX的使用举例，添加商品</button>
-      <p class="count-value">你添加的商品数:{{countValue}}</p>
+  <div class="page container bgColor" @click="clickHandle('test click', $event)">
+    <div class="logo">
+      <image src="../../../static/images/sy_logo.png" alt="" mode="aspectFit" />
+      <h1 class="center">crazy ui</h1>
+    </div>
+    <div class="section">
+      <div class="center">
+        <a href="/pages/counter/main" class="counter">Router举例</a>
+      </div>
+      <div style="margin-top: 10px">
+        <button @click="count()">VueX的使用举例，添加商品</button>
+        <p class="count-value">你添加的商品数:{{countValue}}</p>
+      </div>
+      <div class="center desc text-label">主题色使用举例</div>
     </div>
   </div>
 </template>
@@ -77,12 +86,13 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 
 /** 375px = 750rpx = 屏幕宽 **/
 /** 5、[css单位演示]-px (px以375px标准宽进行适配) **/
 .section{
   width: 375px;
+  margin-top: 50px;
 }
 
 /** 6、[css单位演示]-rpx (rpx以750rpx标准宽进行适配) **/
@@ -93,6 +103,19 @@ export default {
   background-color: aliceblue;
   text-align: center;
 }
+
+.page{
+  height: 100%;
+}
+
+.desc{
+  margin-top: 20px;
+}
+
+.logo image{
+  height: 200rpx;
+}
+
 .userinfo {
   display: flex;
   flex-direction: column;
