@@ -14,8 +14,9 @@ export default {
 <style lang="less">
 
   @import "assets/css/app";
+  @import "assets/css/widow.css";
 
-.container {
+  .container {
   height: 100%;
   display: flex;
   flex-direction: column;

@@ -39,6 +39,7 @@ export default {
     }
   },
   mounted(){
+    console.log(this);
   },
   methods: {
     // 3、[路由program方式演示]-跳转页面
