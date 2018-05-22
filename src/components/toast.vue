@@ -1,5 +1,5 @@
 <template>
-    <div class="toast" :class="toast.masker===true?'toast-maker':'nomasker'" v-if="toast.show" >
+    <div class="toast" :class="toast.masker===true?'toast-maker':'nomasker'" @click="clearToast" v-if="toast.show" >
       <div class="widow-toast-wrapper">
         <div class="widow-toast-icon" v-if="toast.icon || toast.image">
           <div class="icon" :class="toast.icon"></div>
