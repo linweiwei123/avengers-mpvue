@@ -112,5 +112,5 @@ thor.request({
 1、需要公共样式文件 src/assets/css/widow.css （后面所有的通用组件的样式都会放这里）
 2、需要 src/utils/helper.js 文件（封装的组件中会用到）
 #### 反馈提示
-1. [toast](./doc/toast.md)
-1. [calenderHotel](./doc/calenderHotel.md)
+1. [toast](./doc/toast.md) 吐司轻提示
+1. [calenderHotel](./doc/calenderHotel.md) 日期控件
