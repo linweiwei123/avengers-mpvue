@@ -1,61 +1,76 @@
 <template>
-    <div class="calender-wrapper">
-      <div class="weeks box">
-        <div class="week fs28" v-for="(item,index) in data.weeks_ch"  :key="index"  v-bind:data-idx="index">{{item}}
+    <div class="calender-wrapper" v-show="display">
+      <div class="header-wrapper">
+        <div class="header">
+          <span class="header-item close" @click="hide"></span>
+          <span class="header-item" @click="ensure">确定</span>
         </div>
-      </div>
-      <div class="month" v-for="(object,index) in data.allDays" :key="index">
-        <!--年月-->
-        <div class="date-area" style="">
-          <div>{{object.year || "--"}} 年 {{object.month || "--"}} 月</div>
-        </div>
-        <!--日-->
-        <div class="days">
-          <!--循环空-->
-          <div v-if="object.hasEmptyGrid" class="grid white-color" v-for="(emp,index2) in object.empytGrids" :key="index2" v-bind:data-idx="index2"></div>
-          <!--循环天-->
-          <div class="grid white-color" v-for="(cell,index3) in object.days" :key="index3" v-bind:data-idx="index3"  v-bind:data-object="cell" v-on:click="select" style="">
-            <!--天-->
-            <div :class="['day',cell.status==0 ? 'disable':'enable',cell.status==3 ? 'border-radius pink-bg' : '']">{{cell.day}}</div>
-            <!--今天-->
-            <div v-if="cell.status==1" style="color:gray;font-size:12px;text-align:center;">今天</div>
+        <div class="weeks box">
+          <div class="week fs28" v-for="(item,index) in calenda.weeks_ch"  :key="index"  v-bind:data-idx="index">{{item}}
           </div>
         </div>
       </div>
+      <div class="month-wrapper">
+        <div class="month" v-for="(object,index) in calenda.allDays" :key="index">
+          <!--年月-->
+          <div class="date-area" style="">
+            <div>{{object.year || "--"}} 年 {{object.month || "--"}} 月</div>
+          </div>
+          <!--日-->
+          <div class="days">
+            <!--循环空-->
+            <div v-if="object.hasEmptyGrid" class="grid white-color" v-for="(emp,index2) in object.empytGrids" :key="index2" v-bind:data-idx="index2"></div>
+            <!--循环天-->
+            <div class="grid white-color" v-for="(cell,index3) in object.days" :key="index3" v-bind:data-idx="index3"  v-bind:data-object="object" v-on:click="select" style="">
+              <!--天-->
+              <div :style="{'background-color':cell.status===3?config.themeColor:''}" :class="['day border-radius',cell.status==0 ? 'disable':'enable',{'pink-bg':cell.status===3},{'today':cell.status==1}]">{{cell.day}}</div>
+
+              <!--小标-->
+              <div class="day-label">
+                <!--今天-->
+                <div v-if="cell.status==1" style="color:gray;font-size:12px;text-align:center;">今天</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 </template>
 
 <script>
     export default {
-      props:['options'],
+      props:['config'],
       data(){
         return {
-          data:{
+          calenda:{
+            name:''
           },
-          options:this.options
+          display: false,
+          config:this.config
         }
       },
+      computed: {
+
+      },
       created(){
-        console.log('this.options',this.options);
         //初始化数据
         this.initData = function(cur_year,cur_month) {
           // 计算最近三个月的对象
+          var months = this.config.months || 6, monthDataArr = [];
           var mObject0 = this.calculateDays(cur_year, cur_month);
-          if(cur_month+1>12) {
-            cur_year = cur_year+1;
-            cur_month = 1;
-          }else {
-            cur_month = cur_month+1;
+          monthDataArr.push(mObject0);
+          for(let i=1;i<months;i++){
+            if(cur_month+1>12) {
+              cur_year = cur_year+1;
+              cur_month = 1;
+            }else {
+              cur_month = cur_month+1;
+            }
+            let month = this.calculateDays(cur_year, cur_month);
+            monthDataArr.push(month);
           }
-          var mObject1 = this.calculateDays(cur_year, cur_month);
-          if(cur_month+1>12) {//月不能大于12
-            cur_year = cur_year+1;
-            cur_month = 1;
-          }else {
-            cur_month = cur_month+1;
-          }
-          var mObject2 = this.calculateDays(cur_year, cur_month);
-          this.data.allDays = [mObject0,mObject1,mObject2];
+          this.calenda.allDays = monthDataArr;
         };
         // =============获取当月有多少天（下个月月初是多少）==========
         this.getThisMonthDays = function(year, month) {
@@ -102,23 +117,23 @@
           var days = [];
           var thisMonthDays = this.getThisMonthDays(year, month);//这个月有多少天
           //现在的时间
-          var cusDate = new Date(this.data.org_year, this.data.org_month,this.data.org_day);
+          var cusDate = new Date(this.calenda.org_year, this.calenda.org_month,this.calenda.org_day);
           var startDate;
           var endDate;
-          if(this.data.startDate&&this.data.endDate) {
-            startDate = stringToDate(this.data.startDate);
-            endDate = stringToDate(this.data.endDate);
+          if(this.calenda.startDate&&this.calenda.endDate) {
+            startDate = stringToDate(this.calenda.startDate);
+            endDate = stringToDate(this.calenda.endDate);
           }
-          if(this.data.startDate){
-            startDate = stringToDate(this.data.startDate);
+          if(this.calenda.startDate){
+            startDate = stringToDate(this.calenda.startDate);
           }
           for (let i = 1; i <= thisMonthDays; i++) {
             var day = {};
             //加入的时间
             var date = new Date(year, month-1,i);
-            // console.log(date)
             //status 0-不可选择 1-当前时间 2-可选择 3-被选中
             day["day"] = i;
+            day['date'] = date;
             //比现在的时间比较是大于还是小于，小于则不可点击
             var time = parseInt(calculateTime(date,cusDate));
             if(time<0) {
@@ -128,16 +143,14 @@
             }else {
               day["status"] = 2;
             }
-            if(this.data.startDate&&this.data.endDate) {
-              console.log(startDate,endDate);
+            if(this.calenda.startDate&&this.calenda.endDate) {
               var stime = parseInt(calculateTime(date,startDate));
               var etime = parseInt(calculateTime(date,endDate));
-              console.log(stime,etime);
 
               if(stime>=0&&etime<=0) {
                 day["status"] = 3;
               }
-            }else if(this.data.startDate){
+            }else if(this.calenda.startDate){
               var stime = parseInt(calculateTime(date,startDate));
               if(stime==0) {
                 day["status"] = 3;
@@ -149,11 +162,11 @@
           return mObject;
         };
 
-        console.log('calenderHotel',this.options);
-
-        if(this.options && this.options.startDate&&this.options.endDate) {
-          this.data.startDate = this.options.startDate;
-          this.data.endDate = this.options.endDate;
+        if(this.config && this.config.startDate&&this.config.endDate) {
+          this.calenda.startDate = this.config.startDate;
+          this.calenda.endDate = this.config.endDate;
+          this.calStartDate = stringToDate(this.calenda.startDate);
+          this.calEndDate = stringToDate(this.calenda.endDate);
         }
         var date = new Date();
         //获取当前的年月
@@ -162,51 +175,75 @@
         var cur_day = date.getDate();
         const weeks_ch = ['日', '一', '二', '三', '四', '五', '六'];
         //设置数据
-        this.data.org_year = date.getFullYear();
-        this.data.org_month = date.getMonth();
-        this.data.org_day = cur_day;
-        this.data.weeks_ch = weeks_ch;
+        this.calenda.org_year = date.getFullYear();
+        this.calenda.org_month = date.getMonth();
+        this.calenda.org_day = cur_day;
+        this.calenda.weeks_ch = weeks_ch;
         this.initData(cur_year,cur_month);
 
-        console.log(this);
+        // 阻止滚动冒泡
       },
       methods:{
+        show(){
+          this.display = true
+        },
+        hide(){
+          this.display = false
+        },
         select(e){
-          console.log(e.currentTarget.dataset.object);
           var year = e.currentTarget.dataset.object.year;
           var month = e.currentTarget.dataset.object.month;
           var day = e.currentTarget.dataset.idx+1;
           var selectDate = new Date(year,month-1,day);
           //现在的时间
-          var cusDate = new Date(this.data.org_year, this.data.org_month,this.data.org_day);
+          var cusDate = new Date(this.calenda.org_year, this.calenda.org_month,this.calenda.org_day);
           var time = parseInt(calculateTime(selectDate,cusDate));
           if(time<0) {
-            console.log("请选择合理的时间");
-            wx.showToast({
-              title: '请选择合理的时间',
-              icon: 'error',
-              duration: 2000
-            });
             return;
           }
-          if(this.data.startDate&&this.data.endDate) {
-            this.data.startDate = formatDate(selectDate,"yyyy-MM-dd");
-            this.data.endDate = null;
-          }else if(this.data.startDate) {
-            this.data.endDate = formatDate(selectDate,"yyyy-MM-dd");
+          if(this.calenda.startDate&&this.calenda.endDate) {
+            this.calenda.startDate = formatDate(selectDate,"yyyy-MM-dd");
+            this.calenda.endDate = null;
+            this.calStartDate = stringToDate(this.calenda.startDate);
+            this.calEndDate = null;
+          }else if(this.calenda.startDate) {
+            this.calenda.endDate = formatDate(selectDate,"yyyy-MM-dd");
+            this.calEndDate = stringToDate(this.calenda.endDate);
           }else {
-            this.data.startDate = formatDate(selectDate,"yyyy-MM-dd");
+            this.calenda.startDate = formatDate(selectDate,"yyyy-MM-dd");
+            this.calStartDate = stringToDate(this.calenda.startDate);
           }
-          this.initData(this.data.org_year, this.data.org_month+1);
+          this.initData(this.calenda.org_year, this.calenda.org_month+1);
           //返回选择的时间（有起止时间的时候返回）
-          if(this.data.startDate&&this.data.endDate) {
-            console.log('选择了日期：');
-            console.log(this.data.startDate);
-            console.log(this.data.endDate);
-            var sDate = this.data.startDate;
-            var eDate = this.data.endDate;
-
+          if(this.calenda.startDate&&this.calenda.endDate) {
+            var sDate = this.calenda.startDate;
+            var eDate = this.calenda.endDate;
           }
+          this.setDayStatus();
+          this.calenda = JSON.parse(JSON.stringify(this.calenda));
+        },
+        ensure(){
+          this.$emit('choosed-date',{
+            startDate:this.calenda.startDate,
+            endDate:this.calenda.endDate
+          });
+          this.hide();
+        },
+        setDayStatus(){
+          for(let i=0;i<this.calenda.allDays.length;i++){
+              for(let j=0;j<this.calenda.allDays[i].days.length;j++){
+                let dateStr = this.calenda.allDays[i].days[j];
+                let cur = new Date(dateStr);
+                let start = this.calStartDate?this.calStartDate.getTime():null;
+                let end = this.calEndDate?this.calEndDate.getTime():null;
+                if(start === cur || end === cur || start?start<cur:true && end?cur<end:true ){
+                  this.calenda.allDays[i].days[j]["status"] = 3;
+                }
+              }
+          }
+        },
+        onScroll(e){
+          console.log(e);
         }
       },
   }
@@ -311,14 +348,54 @@
 <style scoped>
   .calender-wrapper{
     position: absolute;
+    z-index: 2;
+    background-color: #fff;
+    height: 100%;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 100%;
     width: 100%;
-    z-index: 2;
-    background-color: #fff;
+    animation: bottomUp 0.3s ease-in-out ;
+  }
+
+  .header-wrapper{
+    position:fixed;
+    width:100%;
+    box-sizing:border-box;
+    border-bottom:1px solid #ddd;
+    background-color:#fff;
+    height: 65px;
+  }
+
+  .header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:4px 15px;
+    height:40px;
+    margin-top:-10px;
+  }
+  .header-item{
+    color:#068EEF;
+    font-size:16px;
+    line-height:50px;
+    width:50px;
+    text-align:right;
+  }
+  .close-container{
+    height: 50px;
+    width: 50px;
+  }
+  .close{
+    width:30px;
+    height:30px;
+    fill: #068EEF;
+    background-size: cover;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' id='cross' viewBox='0 0 44 44' width='100%25' height='100%25'%3E%3Cpath fill-rule='evenodd' d='M24.008 21.852l8.97-8.968L31.092 11l-8.97 8.968L13.157 11l-1.884 1.884 8.968 8.968-9.24 9.24 1.884 1.885 9.24-9.24 9.24 9.24 1.885-1.884-9.24-9.24z'%3E%3C/path%3E%3C/svg%3E");
+  }
+  .month-wrapper{
+    margin-top: 65px;
   }
   .month{
     display: block;
@@ -350,7 +427,7 @@
     background-color:rgb(241,243,246);
   }
   .weeks {
-    padding: 10px 0;
+    margin: -6px 0 10px 0;
     height: 50rpx;
     line-height: 50rpx;
   }
@@ -363,7 +440,7 @@
     flex-wrap: wrap;
     align-content: center;
     align-items: center;
-    padding:5px 0;
+    padding:10px 0 5px 0;
   }
   .grid {
     display: flex;
@@ -371,13 +448,13 @@
     flex-direction: column;
     align-items: center;
     align-content: center;
-    margin: 5px 0;
+    margin: 0;
     text-align: center;
     /*border: 1px solid lightgray;*/
   }
   .day {
     width:35px;
-    padding:5px 0;
+    padding:0;
     color:black;
     font-size:14px;
     font-weight:700;
@@ -387,18 +464,20 @@
     justify-content:center;
     align-items:center;
   }
+  .day-label{
+    height: 15px;
+  }
+  .today{
+    background-color: aliceblue;
+  }
   .border-radius {
     border-radius: 50%;
-    position: relative;
-    left: 0;
-    top: 0;
-    color: #fff;
   }
   .disable {
     color: lightgray;
   }
   .pink-bg {
-    background-color: #3EDFBA;
+    color:#fff
   }
   .purple-bg {
     background-color: #b8b8f1;

@@ -5,6 +5,15 @@
   }
 }
 
+@keyframes bottomUp {
+  0% {
+    transform: translateX(376px);
+  }
+  100%{
+    transform: translateX(0px);
+  }
+}
+
 .icon{
   height: 40px;
   width: 40px;
