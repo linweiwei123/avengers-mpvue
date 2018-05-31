@@ -5,7 +5,10 @@
           <span>1、<a href="/pages/toast/main">toast轻提示</a></span>
         </li>
         <li>
-          <span>2、<a href="/pages/calenderHotel/main">时间组件-酒店</a></span>
+          <span>2、<a href="/pages/calender-hotel/main">时间组件-酒店</a></span>
+        </li>
+        <li>
+          <span>3、<a href="/pages/image-picker/main">图片上传组件</a></span>
         </li>
       </ul>
     </div>

@@ -22,7 +22,8 @@ export default {
       'pages/logs/main',
       'pages/index/main',
       'pages/toast/main',
-      'pages/calenderHotel/main',
+      'pages/calender-hotel/main',
+      'pages/image-picker/main',
     ],
     window: {
       backgroundTextStyle: 'light',
