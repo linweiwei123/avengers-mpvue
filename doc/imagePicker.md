@@ -41,7 +41,11 @@ component依赖
       // 查看https://developers.weixin.qq.com/miniprogram/dev/api/media-picture.html#wxchooseimageobject
       sizeType:['original','compressed'],
       // 最多支持上传的文件
-      max: 4
+      maxImage: 4,
+      // 限制单个图片上传的大小，单位kb
+      maxSize: 1000,
+      // 图片太大提示语
+      sizeOverMsg: '图片太大了'
     }
 ```
 
@@ -96,4 +100,6 @@ tokenUrl |必填| 获取token的地址
 serverUrl | 必填|七牛云上传地址
 previewHost |  必填|七牛云的预览地址
 sizeType |  非必填| sizeType 指定是否是压缩的，默认压缩与不压缩都行
-max |  非必填|图片上传熟练限制，默认4
+maxImage |  非必填|图片上传数量限制，默认4
+maxSize |  非必填| 默认无上限
+sizeOverMsg |  非必填|默认'图片太大了'

@@ -26,15 +26,19 @@
 
       </div>
     </div>
+    <widow-toast/>
   </div>
 </template>
 
 <script>
     import thor from '../common/thor/thor';
+    import { getComponentByTag } from "../utils/helper";
+    import widowToast from '@/components/toast';
     const defaultConfig = {
       count: 1,
       sizeType: ['original','compressed'],
-      max: 4
+      maxImage: 4,
+      sizeOverMsg: '图片太大了'
     };
     export default {
         name: "imagePicker",
@@ -51,6 +55,9 @@
             imgIndex:1,
             uploading: false
           }
+        },
+        components:{
+          'widow-toast': widowToast
         },
         computed: {
           calculateFiles(){
@@ -78,7 +85,6 @@
         created(){
           thor.post(this.options.tokenUrl)
             .then(res=>{
-              console.log('请求成功', res);
               this.token = res.data.qiniuToken
             })
             .catch(err=>{
@@ -91,6 +97,9 @@
             return files;
           }
         },
+        mounted(){
+          this.toast = getComponentByTag(this,'widow-toast');
+        },
         methods:{
           upload(){
             const cfg = this.options;
@@ -102,6 +111,14 @@
               success: function(res) {
                 var filePath = res.tempFilePaths[0];
                 var fileName = filePath.split('//')[1];
+                // 限制大小
+                if(typeof that.options.maxSize !== 'undefined'){
+                  var fileInfo = res.tempFiles[0];
+                  if(fileInfo.size > that.options.maxSize * 1000){
+                    that.toast.showToast(that.options.sizeOverMsg);
+                    return;
+                  }
+                }
 
                 // 上传七牛云
                 that.uploading = true;
@@ -119,7 +136,7 @@
                       let url = `${cfg.previewHost}/${JSON.parse(res.data).key}`;
 
                       let spliceNumber = 0;
-                      if(that.files.length === that.options.max){
+                      if(that.files.length === that.options.maxImage){
                         spliceNumber = 1
                       }
 
@@ -147,7 +164,7 @@
               return item.id !== id;
             });
             // 删除文件时判断是否有容纳空间，并且不存在添加模块
-            if(this.files.length<this.options.max){
+            if(this.files.length<this.options.maxImage){
               let hasAdd = this.files.some((item)=>{
                 return item.type === 'add'
               });

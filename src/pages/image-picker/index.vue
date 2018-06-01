@@ -26,7 +26,11 @@
               // 查看https://developers.weixin.qq.com/miniprogram/dev/api/media-picture.html#wxchooseimageobject
               sizeType:['original','compressed'],
               // 最多支持上传的文件
-              max: 4
+              maxImage: 4,
+              // 限制单个图片上传的大小，单位kb
+              maxSize: 1000,
+              // 图片太大提示语
+              sizeOverMsg: '图片太大了'
             },
             files:[]
           }
