@@ -85,7 +85,7 @@ methods
 
 
 支持方法 | 说明
----|---|---
+---|---
 getFilesInfo | 获取最终文件数据
 
 **支持的options**
@@ -95,6 +95,5 @@ getFilesInfo | 获取最终文件数据
 tokenUrl |必填| 获取token的地址
 serverUrl | 必填|七牛云上传地址
 previewHost |  必填|七牛云的预览地址
-
 sizeType |  非必填| sizeType 指定是否是压缩的，默认压缩与不压缩都行
 max |  非必填|图片上传熟练限制，默认4
