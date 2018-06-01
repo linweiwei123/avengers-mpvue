@@ -51,7 +51,8 @@
           toastLoading(){
             this.toast.showToast({
               icon: 'loading',
-              message: 'loading!!!'
+              message: 'loading!!!',
+              duration:200000
             });
           },
           nonet(){

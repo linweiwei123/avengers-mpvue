@@ -113,4 +113,5 @@ thor.request({
 2、需要 src/utils/helper.js 文件（封装的组件中会用到）
 #### 反馈提示
 1. [toast](./doc/toast.md) 吐司轻提示
-1. [calenderHotel](./doc/calenderHotel.md) 日期控件
+2. [calenderHotel](./doc/calenderHotel.md) 日期控件
+3. [imagePicker](./doc/imagePicker.md) 上传图片组件
