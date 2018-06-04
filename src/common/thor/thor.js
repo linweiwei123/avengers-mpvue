@@ -37,7 +37,7 @@ utils.forEach(['delete','get'],function forEachMethodNoData(method){
                 method: method.toUpperCase(),
                 success: function(res) {
                   console.log('[API返回]:', res);
-                  if(res && res.data && typeof res.data.errcode !== 'undefined'){
+                  if(res && res.data){
                       resolve(res.data);
                   }
                   else{

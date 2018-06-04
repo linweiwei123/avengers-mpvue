@@ -10,6 +10,9 @@
         <li>
           <span>3、<a href="/pages/image-picker/main">图片上传组件</a></span>
         </li>
+        <li>
+          <span>4、<a href="/pages/city-locator/main">城市信息选择</a></span>
+        </li>
       </ul>
     </div>
 </template>

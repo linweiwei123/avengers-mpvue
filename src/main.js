@@ -24,6 +24,7 @@ export default {
       'pages/toast/main',
       'pages/calender-hotel/main',
       'pages/image-picker/main',
+      'pages/city-locator/main',
     ],
     window: {
       backgroundTextStyle: 'light',
