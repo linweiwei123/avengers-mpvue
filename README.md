@@ -115,3 +115,4 @@ thor.request({
 1. [toast](./doc/toast.md) 吐司轻提示
 2. [calenderHotel](./doc/calenderHotel.md) 日期控件
 3. [imagePicker](./doc/imagePicker.md) 上传图片组件
+4. [cityLocator](./doc/cityLocator.md) 城市定位与选择

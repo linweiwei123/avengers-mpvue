@@ -3,9 +3,9 @@
     <div class="section-citylocate list">
       <div class="search item">
         <span class="icon-search"></span>
-        <span class="text" @click="change">
-          <!--<span v-if="searchStatus==='text'"></span>-->
-          <input type="text"  placeholder="城市/区域/位置" v-model="searchCity">
+        <span class="text" >
+          <input type="text"  placeholder="城市/区域/位置" v-model="searchCity" v-on:focus="onFocus">
+          <span class="icon-close" v-if="showList" @click="onClose"></span>
         </span>
       </div>
       <div class="current item">
@@ -35,8 +35,8 @@
             </div>
         </div>
     </div>
-    <div class="search-city-list">
-      <div class="item" v-for="(item,index) in searchFor(cityListFormatted,searchCity)" v-bind:key="index" >
+    <div class="search-city-list bg" v-if="showList">
+      <div class="item" v-for="(item,index) in filterdSearchCity" v-bind:key="index" @click="choose(item)">
         {{item.city}}
       </div>
     </div>
@@ -57,12 +57,12 @@
               cityCode: '',
               address: ''
             },
-            hotCitys: this.config.hotCitys,
-            searchStatus:'text',
+            hotCitys: this.config.hotCitys, // 热门城市列表
             searchCity:'',
             cityList:[],
             cityListFormatted:[],
-            choosedCity:''
+            showList: false,
+            choosedCity: this.config.choosedCity || ''
           }
         },
         computed:{
@@ -90,6 +90,14 @@
           },
           formatCityList(){
             this.cityListFormatted = formatCityData(this.cityList);
+          },
+          filterdSearchCity(){
+            if(this.searchCity === ''){
+              return [];
+            }
+            return this.cityListFormatted.filter(item=>{
+              return item.city.indexOf(this.searchCity)>-1
+            });
           }
         },
         created(){
@@ -104,7 +112,6 @@
                 .then(baiduRet=>{
                   that.cityInfo.cityCode = baiduRet.result.cityCode;
                   that.cityInfo.address = baiduRet.result.formatted_address;
-                  console.log('baiduRet',baiduRet);
                   that.choosedCity = {
                     city: baiduRet.result.addressComponent.city,
                     cityCode: baiduRet.result.addressComponent.cityCode,
@@ -131,34 +138,31 @@
           // }
           // this.searchLetter = tempObj;
 
-          console.log('citySelectList',cityList);
         },
         mounted(){
 
         },
         watch: {
           'searchCity': function (newVal) {
-            console.log(newVal,this.cityList);
           }
         },
         methods:{
-          change(){
-            this.searchStatus = 'input';
-          },
           choose(city){
-            this.choosedCity = city
+            this.choosedCity = city;
+            this.onClose();
+            this.$emit('onCity',city)
           },
-          searchFor(listCityFormatted,searchCity){
-            console.log(listCityFormatted,searchCity);
-            let searched =  listCityFormatted.filter(item=>{
-              return item.city.indexOf(searchCity)>-1
-            })
-            console.log('searched',searched);
-            return searched;
+          onFocus(){
+            this.showList = true;
+          },
+          onClose(){
+            this.searchCity = '';
+            this.showList = false;
           }
         }
     }
 
+    // 转换城市数据-根据需求而定
     function formatCityData(cityData){
       let result = [];
       cityData.forEach(line=>{
@@ -186,6 +190,7 @@
     color: #fff;
     font-size: 16px;
     line-height: 40px;
+    position: relative;
   }
   .icon-search{
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAMAAABHPGVmAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OEMxMjkyQjM2N0YwMTFFODg2OTRBQUFEM0M5RkZEMDQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OEMxMjkyQjQ2N0YwMTFFODg2OTRBQUFEM0M5RkZEMDQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4QzEyOTJCMTY3RjAxMUU4ODY5NEFBQUQzQzlGRkQwNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4QzEyOTJCMjY3RjAxMUU4ODY5NEFBQUQzQzlGRkQwNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Ps+rFokAAAAGUExURf///////1V89WwAAAACdFJOU/8A5bcwSgAAAMxJREFUeNrs2FEOhTAIRFG6/037a5QmUAaeL7l8asIxai2jrYEyEBAQEBAQEBAQEJAPIHarHsSe1YCYU2LE/JIir655xaKGc0yN+LIK2XSTIttmKSWCJM8IkYxip8YMspTI2RWAgHwGGVknP13xMmTwK2zNyFZp2H6tdfv1FRMPEk7H/IB3PkHqXmGNcj7VJ5TwbX1fflzJjM3PpmGlFOeiSi0zBpViMI0p1fQbUsoRO6LUc/wIskaQ1f9M+IEDAgICAgICAgLyp8glwAAaKSUPk7A2owAAAABJRU5ErkJggg==');
@@ -207,6 +212,16 @@
     color: #000;
     padding-left: 3px;
     width: 305px;
+  }
+  .icon-close {
+    height:17px;
+    width:20px;
+    background-repeat:no-repeat;
+    background-size:contain;
+    position:absolute;
+    right:10px;
+    top:17px;
+    z-index:2;
   }
   .mini-title{
     font-size: 12px;
@@ -241,8 +256,7 @@
     border-radius:3px;
     font-size:14px;
     display:inline-block;
-    padding:6px 17px;
-
+    padding:6px 24px;
   }
   .city-list{
     display: flex;
@@ -297,15 +311,18 @@
     top:61px;
     width:100%;
     background-color:#fff;
-    padding: 0 10px;
+  }
+  .search-city-list.bg{
+    background-color: rgba(0,0,0,0.5);
+    min-height: 100%;
   }
   .search-city-list .item{
     width: 100%;
     background-color: #ffffff;
     font-size: 14px;
     line-height:40px;
+    padding: 0 10px;
   }
-
   .search-city-list .item:after{
     content: '';
     display: block;
