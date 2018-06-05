@@ -45,7 +45,7 @@ component依赖
 
 
 支持方法 | 说明
----|---|---
+---|---
 success | 成功提示
 fail | 失败提示
 loading | loading提示
@@ -54,7 +54,7 @@ nonet | 无网络提示
 **支持的options**
 
 支持配置 | 说明
----|---|---
+---|---
 icon | 图标，支持success、fail、loading、nonet
 masker | true为有透明背景遮罩（防止误触）、false为无背景遮罩
 message | 提示

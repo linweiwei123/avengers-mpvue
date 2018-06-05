@@ -70,7 +70,8 @@ onCity | 选择后回传选中的城市信息
 
 支持配置 | 是否必填 |说明
 ---|---|---
-baiduMapAk |必填| 百度ak
-hotCitys | 必填|热门城市 数组，内容就是那个接口返回的数据格式
-choosedCity |  非必填|默认选择的城市 是个对象，包含{ city:'城市名',cityCode:'城市编码'}
+baiduMapAk | 必填 | 百度ak
+hotCitys | 必填| 热门城市 数组，内容就是那个接口返回的数据格式
+choosedCity |  非必填 | 默认选择的城市 是个对象，包含{ city:'城市名',cityCode:'城市编码'}
+
 
