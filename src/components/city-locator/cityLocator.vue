@@ -4,8 +4,8 @@
       <div class="search item">
         <span class="icon-search"></span>
         <span class="text" @click="change">
-          <span v-if="searchStatus==='text'">城市/区域/位置</span>
-          <input type="text"  v-if="searchStatus==='input'">
+          <!--<span v-if="searchStatus==='text'"></span>-->
+          <input type="text"  placeholder="城市/区域/位置" v-model="searchCity">
         </span>
       </div>
       <div class="current item">
@@ -14,26 +14,38 @@
           <span class="icon"></span>
           <span class="address">{{cityInfo.address}}</span>
         </div>
-        <div class="cur-select"></div>
+        <div class="cur-select">
+          <span class="address" v-if="choosedCity">{{choosedCity.city}}</span>
+        </div>
       </div>
       <div class="hot list">
         <div class="mini-title">热门</div>
         <div class="city-list item" v-for="(line, index) in hotCitys" v-bind:key="index">
-          <div class="city-item" v-bind:class="{hide: !item.city}" v-for="(item, index2) in line" v-bind:key="index2" >{{item.city}}</div>
+          <div class="city-item" v-bind:class="{hide: !item.city}"
+               v-for="(item, index2) in line" v-bind:key="index2"  @click="choose(item)">{{item.city}}</div>
         </div>
       </div>
     </div>
     <div class="section-citylist">
-
+        <div class="line-1rpx"></div>
+        <div class="block" v-for="(category,index) in cityList" v-bind:key="index">
+            <div class="block-list-category">{{category.initial}}</div>
+            <div class="block-list-item" v-for="(item,index2) in category.cityInfo" v-bind:key="index2" @click="choose(item)">
+                <span>{{item.city}}</span>
+            </div>
+        </div>
     </div>
-    <div class="select-city-list">
-      <div></div>
+    <div class="search-city-list">
+      <div class="item" v-for="(item,index) in searchFor(cityListFormatted,searchCity)" v-bind:key="index" >
+        {{item.city}}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
     import thor from '../../common/thor/thor';
+    const city = require('./city');
     export default {
         name: "cityLocator",
         props:['config'],
@@ -46,7 +58,11 @@
               address: ''
             },
             hotCitys: this.config.hotCitys,
-            searchStatus:'text'
+            searchStatus:'text',
+            searchCity:'',
+            cityList:[],
+            cityListFormatted:[],
+            choosedCity:''
           }
         },
         computed:{
@@ -71,10 +87,14 @@
               tempList.push(tempLastArr);
             }
             this.hotCitys = tempList;
+          },
+          formatCityList(){
+            this.cityListFormatted = formatCityData(this.cityList);
           }
         },
         created(){
           const that = this;
+          // 获取经纬度，根据经纬度去百度api获取地址信息
           wx.getLocation({
             type: 'wgs84',
             success: function(res) {
@@ -84,27 +104,69 @@
                 .then(baiduRet=>{
                   that.cityInfo.cityCode = baiduRet.result.cityCode;
                   that.cityInfo.address = baiduRet.result.formatted_address;
+                  console.log('baiduRet',baiduRet);
+                  that.choosedCity = {
+                    city: baiduRet.result.addressComponent.city,
+                    cityCode: baiduRet.result.addressComponent.cityCode,
+                  }
                 })
                 .catch(err=>{
                   console.log('请求百度地图失败', err);
                 })
             }
           })
+          let cityList = city.cityList();
+          this.cityList = cityList;
+          // let searchLetter = city.searchLetter;
+          // var sysInfo = wx.getSystemInfoSync();
+          // var winHeight = sysInfo.windowHeight;
+          // var itemH = winHeight / searchLetter.length;
+          // var tempObj = [];
+          // for (var i = 0; i < searchLetter.length; i++) {
+          //   var temp = {};
+          //   temp.name = searchLetter[i];
+          //   temp.tHeight = i * itemH;
+          //   temp.bHeight = (i + 1) * itemH;
+          //   tempObj.push(temp)
+          // }
+          // this.searchLetter = tempObj;
+
+          console.log('citySelectList',cityList);
         },
         mounted(){
 
         },
         watch: {
-          'config.hotCitys': function (newVal, oldVal) {
-            console.log('config.hotCitys',newVal,oldVal);
+          'searchCity': function (newVal) {
+            console.log(newVal,this.cityList);
           }
         },
         methods:{
           change(){
             this.searchStatus = 'input';
+          },
+          choose(city){
+            this.choosedCity = city
+          },
+          searchFor(listCityFormatted,searchCity){
+            console.log(listCityFormatted,searchCity);
+            let searched =  listCityFormatted.filter(item=>{
+              return item.city.indexOf(searchCity)>-1
+            })
+            console.log('searched',searched);
+            return searched;
           }
         }
+    }
 
+    function formatCityData(cityData){
+      let result = [];
+      cityData.forEach(line=>{
+        line.cityInfo.forEach(city=>{
+          result.push(city);
+        })
+      });
+      return result;
     }
 </script>
 
@@ -114,7 +176,7 @@
   }
   .section-citylocate{
     background-color: #F7F7F7;
-    padding: 0 10px;
+    padding: 10px;
   }
   .search {
     background-color: #3EDFBA;
@@ -165,6 +227,23 @@
   .location .address{
     margin-left: 6px;
   }
+  .cur-select{
+    margin-top: 10px;
+  }
+  .cur-select .address{
+    border:1px solid rgba(0,0,0,0.1);
+    text-align:center;
+    margin-right:10px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background-color:#fff;
+    border-radius:3px;
+    font-size:14px;
+    display:inline-block;
+    padding:6px 17px;
+
+  }
   .city-list{
     display: flex;
     justify-content: start;
@@ -187,8 +266,51 @@
     align-items: center;
     background-color: #fff;
     border-radius: 3px;
+    font-size: 14px;
   }
   .city-item.hide{
     opacity: 0;
   }
+  .block-list-category{
+    line-height: 24px;
+    padding-left: 10px;
+    font-size: 14px;
+    background-color: #F1F3F7;
+  }
+  .block-list-item{
+    width: 100%;
+    background-color: #ffffff;
+    font-size: 14px;
+    line-height:40px;
+  }
+  .block-list-item span{
+    margin-left: 10px;
+  }
+  .block-list-item:after{
+    content: '';
+    display: block;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    transform: scaleY(0.33);
+  }
+  .search-city-list{
+    position:absolute;
+    top:61px;
+    width:100%;
+    background-color:#fff;
+    padding: 0 10px;
+  }
+  .search-city-list .item{
+    width: 100%;
+    background-color: #ffffff;
+    font-size: 14px;
+    line-height:40px;
+  }
+
+  .search-city-list .item:after{
+    content: '';
+    display: block;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    transform: scaleY(0.33);
+  }
+
 </style>

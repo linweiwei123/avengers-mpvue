@@ -57,3 +57,9 @@
   content: ' ';
   padding-bottom: 100%;
 }
+
+.line-1rpx{
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  transform: scaleY(0.33);
+  display: block;
+}
